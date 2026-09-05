@@ -1,0 +1,17 @@
+name: Terraform CD 
+
+on: 
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7 # using actions/checkout - clonning repo. same as shell command ->  run: git clone [http repo link]
+        # with:
+        #   repository: 'may-group-2026-terraform' #using repo other than actions
+        name: Checkout repository
+
+      - name: Terraform init 
+        run: terraform init 
