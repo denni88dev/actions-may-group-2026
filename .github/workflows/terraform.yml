@@ -23,3 +23,6 @@ jobs:
 
       - name: Terraform init 
         run: terraform init  # will fail as no terraform was installed on this ubuntu VM
+
+      - name: Terraform apply
+        run: terraform apply -auto-approve
