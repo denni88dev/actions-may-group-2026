@@ -1,4 +1,4 @@
-name: Terraform CD 
+name: Terraform CD # name of the workflow
 
 on: 
   push:
@@ -14,4 +14,4 @@ jobs:
         name: Checkout repository
 
       - name: Terraform init 
-        run: terraform init 
+        run: terraform init  # will fail as no terraform was installed on this ubuntu VM
