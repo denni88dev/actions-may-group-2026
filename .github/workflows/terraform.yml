@@ -9,9 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7 # using actions/checkout - clonning repo. same as shell command ->  run: git clone [http repo link]
+        name: Checkout repository
         # with:
         #   repository: 'may-group-2026-terraform' #using repo other than actions
-        name: Checkout repository
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v4   
+      # - name: Install Terraform   # -> overnoised. Go to GitHub Marketplace - type: actions 
+      #   run: |
+      #     wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      #     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+      #     sudo apt update && sudo apt install terraform  
 
       - name: Terraform init 
         run: terraform init  # will fail as no terraform was installed on this ubuntu VM
