@@ -23,11 +23,21 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4 # using actions/checkout - clonning repo. same as shell command ->  run: git clone [http repo link]
+        # with:
+        #   repository: 'may-group-2026-terraform' #using repo other than actions
+        name: Checkout repository
+      - name: List files and folders # checking if it checkout/git clon our repo
+        run: ls -lah  
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
+
+      - name: create folder
+        run: mkdir hello  
+      - name: List files and folders
+        run: ls -lah   
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
