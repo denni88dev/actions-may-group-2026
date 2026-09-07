@@ -52,7 +52,7 @@ jobs:
 
       - name: Terraform Apply or Destroy #ubuntu machine have no permittion to create ec2. needs secret/acces key (credencials for aws acc)
         run: |
-          if [[ ${{inputs.action == "apply"}} ]]
+          if [[ ${{inputs.action}} == "apply" ]]
           then
             terraform apply -auto-approve
           else
