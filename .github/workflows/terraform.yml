@@ -4,6 +4,11 @@ on:
   # push:
   #   branches: ["main"]
   workflow_dispatch:  # -> Allows you to run this workflow manually from the Actions tab. Mannual execution
+    inputs: # -> adding more buttons to manuall run on github actions page
+      action:
+        type: string
+        description: Please type apply or destroy
+
 
 jobs:
   deploy:
