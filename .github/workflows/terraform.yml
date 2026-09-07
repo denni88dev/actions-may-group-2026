@@ -50,5 +50,11 @@ jobs:
       - name: Terraform init 
         run: terraform init  # will fail as no terraform was installed on this ubuntu VM
 
-      - name: Terraform apply #ubuntu machine have no permittion to create ec2. needs secret/acces key (credencials for aws acc)
-        run: terraform destroy -auto-approve
+      - name: Terraform Apply or Destroy #ubuntu machine have no permittion to create ec2. needs secret/acces key (credencials for aws acc)
+        run: |
+          if [[ ${{inputs.action == "apply"}} ]]
+          then
+            terraform apply -auto-approve
+          else
+            terraform destroy -auto-approve
+          fi    
