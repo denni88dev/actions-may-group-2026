@@ -1,9 +1,10 @@
 name: Terraform CD # name of the workflow
 
 on: 
-  push:
-    branches: ["main"]
-    # workflow_dispatch: # -> Allows you to run this workflow manually from the Actions tab
+  # push:
+  #   branches: ["main"]
+  workflow_dispatch:  # -> Allows you to run this workflow manually from the Actions tab. Mannual execution
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
