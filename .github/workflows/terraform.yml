@@ -8,7 +8,7 @@ on:
       action:
         # type: string # -> typing
         type: choice # -> choosing
-        options: |
+        options: 
         - apply
         - destroy  
         description: Please type apply or destroy
