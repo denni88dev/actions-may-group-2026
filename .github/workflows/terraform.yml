@@ -11,7 +11,24 @@ on:
         options: 
         - apply
         - destroy  
-        description: Please type apply or destroy
+        description: Please select apply or destroy
+
+      region:        # -> using user input to provide values for variables. vars in terraform file is not applies to .yml file - have to created
+        type: choice
+        options:
+        - us-east-1
+        - us-east-2
+        - us-west-1
+        - us-west-2
+        description: Please select region
+
+      instance_type:
+        type: string
+        description: Please provide instance type
+        
+      instance_name:
+        type: strin
+        description: Please provide instance name    
 
 
 jobs:
