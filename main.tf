@@ -1,5 +1,5 @@
 provider "aws" {
-    region = "us-east-1"
+    region = var.region
     # access_key_id = "<YOUR_ACCESS_KEY_ID>" # -> exposing keys this way.Use gitHub actions marketplace
     # secret_access_key = "<YOUR_SECRET_ACCESS_KEY>"
 }
@@ -32,10 +32,13 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "example" {
   ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.micro"
+  instance_type = var.instance_type
 
   tags = {
-    Name = "HelloWorld"
+    Name = var.instance_name
   }
 }
 
+variable "instance_type" {} # -> will be an error(vars value not defined)as we dhave to define this vars in var.tfvars file, but it not be pushed to git
+variable "instance_name" {}
+variable "region" {}
