@@ -4,9 +4,13 @@ on:
   # push:
   #   branches: ["main"]
   workflow_dispatch:  # -> Allows you to run this workflow manually from the Actions tab. Mannual execution
-    inputs: # -> adding more buttons to manuall run on github actions page
+    inputs: # -> adding more buttons(user input) to manuall run on github actions page
       action:
-        type: string
+        # type: string # -> typing
+        type: choice # -> choosing
+        options: |
+        - apply
+        - destroy  
         description: Please type apply or destroy
 
 
