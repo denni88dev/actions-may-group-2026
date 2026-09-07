@@ -1,6 +1,18 @@
 provider "aws" {
     region = "us-east-1"
+    # access_key_id = "<YOUR_ACCESS_KEY_ID>" # -> exposing keys this way.Use gitHub actions marketplace
+    # secret_access_key = "<YOUR_SECRET_ACCESS_KEY>"
 }
+
+terraform {
+  backend "s3" {
+    bucket = "kaizen-dennis-backend"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+  }
+}
+
+
 
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -26,3 +38,4 @@ resource "aws_instance" "example" {
     Name = "HelloWorld"
   }
 }
+
