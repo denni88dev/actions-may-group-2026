@@ -41,4 +41,4 @@ jobs:
           # aws configure set default.region us-east-1
 
       - name: Terraform apply #ubuntu machine have no permittion to create ec2. needs secret/acces key (credencials for aws acc)
-        run: terraform apply -auto-approve
+        run: terraform destroy -auto-approve
