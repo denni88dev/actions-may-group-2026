@@ -39,6 +39,6 @@ resource "aws_instance" "example" {
   }
 }
 
-variable "instance_type" {} # -> will be an error(vars value not defined)as we dhave to define this vars in var.tfvars file, but it not be pushed to git
-variable "instance_name" {}
+variable "instance_type" {} # -> will be an error(vars value not defined - expected us to inpute value)as we dhave to define this vars in var.tfvars file, but it not be pushed to git
+variable "instance_name" {} # -> have to provide in workflow_dispatch : user inputs
 variable "region" {}
