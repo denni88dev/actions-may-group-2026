@@ -3,7 +3,7 @@ name: Terraform CD # name of the workflow
 on: 
   push:
     branches: ["main"]
-
+    # workflow_dispatch: # -> Allows you to run this workflow manually from the Actions tab
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -24,5 +24,21 @@ jobs:
       - name: Terraform init 
         run: terraform init  # will fail as no terraform was installed on this ubuntu VM
 
-      - name: Terraform apply
+      - name: Configure AWS credentials # will get keys from repo setting - repo secrets
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+      # - name: Log in # -> store both keys in secrets(github->repo_settings->secrets_and_variables->actions)using actions 'configure aws credentials' on marketplace
+      #   run: |
+        # is not safe as we can not push to github our keys
+          # export AWS_ACCESS_KEY_ID = "<YOUR_ACCESS_KEY_ID>" 
+          # export AWS_SECRET_ACCESS_KEY_ID = "<YOUR_SECRET_ACCES_KEY>"
+        # or this way:   
+          # aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws configure set aws_secret_access_key_id ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
+          # aws configure set default.region us-east-1
+
+      - name: Terraform apply #ubuntu machine have no permittion to create ec2. needs secret/acces key (credencials for aws acc)
         run: terraform apply -auto-approve
