@@ -1,4 +1,4 @@
-name: Terraform Environment CD # name of the workflow
+name: Terraform Self Hosted Runner CD # name of the workflow
 
 on: 
   # push:
@@ -24,7 +24,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted # -> if you chose own runner (ubuntu-runner)
+    runs-on: self-hosted # -> if you chose own runner (ubuntu-runner). will Wait for a runner to pick up this job...We have to execute - ./run.sh
     environment: ${{ inputs.environment }} # -> tho whole job below will run base on environment choice of user input (envirob=nmet that we created in repo settings)
     steps:
       - uses: actions/checkout@v7 # using actions/checkout - clonning repo. same as shell command ->  run: git clone [http repo link]
@@ -33,8 +33,8 @@ jobs:
       - name: Create tfvars file  
         run: echo "${{ vars.TFVARS }}" > terraform.tfvars # -> getting from repo settings-environments. Stored on github. Have to be writtent tfvars and stored on vm
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v4   
+      # - name: Install Terraform            # -> terraform will be installed on our runner
+      #   uses: hashicorp/setup-terraform@v4 # -> no need installation step here  
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6.2.4
