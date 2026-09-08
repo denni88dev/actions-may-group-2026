@@ -23,10 +23,12 @@ on:
         description: Please select region
 
       instance_type:
+        required: true # -> user input mandatory, can not skip it
         type: string
         description: Please provide instance type
 
       instance_name:
+        required: true # -> user input mandatory, can not skip it
         type: strin
         description: Please provide instance name    
 
