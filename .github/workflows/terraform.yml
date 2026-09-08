@@ -43,9 +43,9 @@ jobs:
       - name: Create tfvars file   # -> creating tfvars on temp vm. EOF - EndOfFile
         run: |
           cat <<EOF > terraform.tfvars      
-          instance_name = ${{ inputs.instance_name }}
-          instance_type = ${{ inputs.instance_type }}
-          region = ${{ inputs.region }}
+          instance_name = "${{ inputs.instance_name }}"
+          instance_type = "${{ inputs.instance_type }}"
+          region = "${{ inputs.region }}"
           EOF
 
       - name: Install Terraform
