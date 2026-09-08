@@ -1,0 +1,56 @@
+name: Terraform Environment CD # name of the workflow
+
+on: 
+  # push:
+  #   branches: ["main"]
+  workflow_dispatch:  # -> Allows you to run this workflow manually from the Actions tab. Mannual execution
+    inputs: # -> adding more buttons(user input) to manuall run on github actions page
+      action:
+        # type: string # -> typing
+        type: choice # -> choosing
+        options: 
+        - apply
+        - destroy  
+        description: Please select apply or destroy
+
+      environment:   
+        type: choice 
+        options:     
+        - us-east-1
+        - us-east-2
+        - us-west-1
+        - us-west-2
+        description: Please select region
+
+jobs:
+  deploy:
+    runs-on: self-hosted # -> if you chose own runner (ubuntu-runner)
+    environment: ${{ inputs.environment }} # -> tho whole job below will run base on environment choice of user input (envirob=nmet that we created in repo settings)
+    steps:
+      - uses: actions/checkout@v7 # using actions/checkout - clonning repo. same as shell command ->  run: git clone [http repo link]
+        name: Checkout repository
+
+      - name: Create tfvars file  
+        run: echo "${{ vars.TFVARS }}" > terraform.tfvars # -> getting from repo settings-environments. Stored on github. Have to be writtent tfvars and stored on vm
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v4   
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ inputs.environment }}
+
+      - name: Terraform init 
+        run: terraform init -backend-config=key="${{ inputs.environment }}/terraform.tfstate" # -> by modifying s3 backend each region/environment will have its own state file
+
+      - name: Terraform Apply or Destroy 
+        run: |
+          if [[ ${{inputs.action}} == "apply" ]]
+          then
+            terraform apply -auto-approve
+          else
+            terraform destroy -auto-approve
+          fi    
