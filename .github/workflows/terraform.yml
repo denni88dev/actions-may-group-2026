@@ -13,9 +13,9 @@ on:
         - destroy  
         description: Please select apply or destroy
 
-      region:        # -> using user input to provide values for variables. vars in terraform file is not applies to .yml file - have to created
-        type: choice
-        options:
+      region:        # -> using user input to provide values for variables. vars in terraform file is not applies to .yml file - have to create and link to vars in main.tf
+        type: choice # --> by providing all vars while terraform apply -var region="us-eat-1" -var instance_name="hello" -var... -auto-approve
+        options:     # ---> or Create a .tfvars by runner(agent) on that temporary container(vm). We have values - user inputs.
         - us-east-1
         - us-east-2
         - us-west-1
@@ -25,7 +25,7 @@ on:
       instance_type:
         type: string
         description: Please provide instance type
-        
+
       instance_name:
         type: strin
         description: Please provide instance name    
@@ -39,6 +39,14 @@ jobs:
         name: Checkout repository
         # with:
         #   repository: 'may-group-2026-terraform' #using repo other than actions
+
+      - name: Create tfvars file   # -> creating tfvars on temp vm. EOF - EndOfFile
+        run: |
+          cat <<EOF > terraform.tfvars      
+          instance_name = ${{ inputs.instance_name }}
+          instance_type = ${{ inputs.instance_type }}
+          region = ${{ inputs.region }}
+          EOF
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v4   
