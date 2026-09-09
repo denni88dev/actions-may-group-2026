@@ -1,0 +1,89 @@
+name: Cronjob CD # name of the workflow
+
+on: 
+  # push:
+  #   branches: ["main"]
+  schedule: # -> cronjob
+    - crone: 0 3 * * *  # -> 3am every single day
+  workflow_dispatch:  # -> Allows you to run this workflow manually from the Actions tab. Mannual execution
+    inputs: # -> adding more buttons(user input) to manuall run on github actions page
+      action:
+        # type: string # -> typing
+        type: choice # -> choosing
+        options: 
+        - apply
+        - destroy  
+        description: Please select apply or destroy
+
+      region:        # -> using user input to provide values for variables. vars in terraform file is not applies to .yml file - have to create and link to vars in main.tf
+        type: choice # --> by providing all vars while terraform apply -var region="us-eat-1" -var instance_name="hello" -var... -auto-approve
+        options:     # ---> or Create a .tfvars by runner(agent) on that temporary container(vm). We have values - user inputs.
+        - us-east-1
+        - us-east-2
+        - us-west-1
+        - us-west-2
+        description: Please select region
+
+      instance_type:
+        required: true # -> user input mandatory, can not skip it
+        type: string
+        description: Please provide instance type
+
+      instance_name:
+        required: true # -> user input mandatory, can not skip it
+        type: strin
+        description: Please provide instance name    
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7 # using actions/checkout - clonning repo. same as shell command ->  run: git clone [http repo link]
+        name: Checkout repository
+        # with:
+        #   repository: 'may-group-2026-terraform' #using repo other than actions
+
+      - name: Create tfvars file   # -> creating tfvars on temp vm. EOF - EndOfFile
+        run: |
+          cat <<EOF > terraform.tfvars      
+          instance_name = "${{ inputs.instance_name }}"
+          instance_type = "${{ inputs.instance_type }}"
+          region = "${{ inputs.region }}"
+          EOF
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v4   
+      # - name: Install Terraform   # -> overnoised. Go to GitHub Marketplace - type: actions 
+      #   run: |
+      #     wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      #     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(grep -oP '(?<=UBUNTU_CODENAME=).*' /etc/os-release || lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+      #     sudo apt update && sudo apt install terraform  
+
+      - name: Configure AWS credentials # will get keys from repo setting - repo secrets
+        uses: aws-actions/configure-aws-credentials@v6.2.4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+      # - name: Log in # -> store both keys in secrets(github->repo_settings->secrets_and_variables->actions)using actions 'configure aws credentials' on marketplace
+      #   run: |
+        # is not safe as we can not push to github our keys
+          # export AWS_ACCESS_KEY_ID = "<YOUR_ACCESS_KEY_ID>" 
+          # export AWS_SECRET_ACCESS_KEY_ID = "<YOUR_SECRET_ACCES_KEY>"
+        # or this way:   
+          # aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          # aws configure set aws_secret_access_key_id ${{ secrets.AWS_SECRET_ACCESS_KEY_ID }}
+          # aws configure set default.region us-east-1
+
+      - name: Terraform init 
+        run: terraform init  # will fail as no terraform was installed on this ubuntu VM
+
+      - name: Terraform Apply or Destroy #ubuntu machine have no permittion to create ec2. needs secret/acces key (credencials for aws acc)
+        run: |
+          if [[ ${{inputs.action}} == "apply" ]]
+          then
+            terraform apply -auto-approve
+          else
+            terraform destroy -auto-approve
+          fi    
