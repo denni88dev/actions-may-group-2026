@@ -18,4 +18,4 @@ jobs:
         #   repository: 'may-group-2026-terraform' #using repo other than actions
 
       - name: Runnin cron job execution
-        run: echo "Its a Cron Run. Time is $(date)"
+        run: 'echo "Its a Cron Run. Time is: $(date)"'
