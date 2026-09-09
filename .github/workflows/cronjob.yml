@@ -4,7 +4,7 @@ on:
   # push:
   #   branches: ["main"]
   schedule: # -> cronjob
-    - cron: "* * * * *"  # -> 3am every single day. Needs default variables(instance_type, instance_name) as it runs automatically. 
+    - cron: "*/5 * * * *"  # -> 3am every single day. Needs default variables(instance_type, instance_name) as it runs automatically. 
 
   workflow_dispatch:  # -> Allows you to run this workflow manually from the Actions tab. Mannual execution
     inputs: # -> adding more buttons(user input) to manuall run on github actions page
