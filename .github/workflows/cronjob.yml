@@ -4,7 +4,7 @@ on:
   # push:
   #   branches: ["main"]
   schedule: # -> cronjob
-    - cron: 0 3 * * *  # -> 3am every single day
+    - cron: "* * * * *"  # -> 3am every single day. Needs default variables(instance_type, instance_name) as it runs automatically. 
 
   workflow_dispatch:  # -> Allows you to run this workflow manually from the Actions tab. Mannual execution
     inputs: # -> adding more buttons(user input) to manuall run on github actions page
@@ -15,6 +15,7 @@ on:
         - apply
         - destroy  
         description: Please select apply or destroy
+        default: apply # -> default variables for cron job will be applyed
 
       region:        # -> using user input to provide values for variables. vars in terraform file is not applies to .yml file - have to create and link to vars in main.tf
         type: choice # --> by providing all vars while terraform apply -var region="us-eat-1" -var instance_name="hello" -var... -auto-approve
@@ -24,16 +25,19 @@ on:
         - us-west-1
         - us-west-2
         description: Please select region
+        default: us-east-1 # -> default variables for cron job will be applyed
 
       instance_type:
         required: true # -> user input mandatory, can not skip it
         type: string
         description: Please provide instance type
+        default: t3.micro # -> default variables for cron job will be applyed
 
       instance_name:
         required: true # -> user input mandatory, can not skip it
         type: strin
-        description: Please provide instance name    
+        description: Please provide instance name 
+        default: cron   # -> default variables for cron job will be applyed
 
 
 jobs:
